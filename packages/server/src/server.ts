@@ -2,6 +2,7 @@ import express, { Request, Response } from "express";
 import "dotenv/config";
 import { connectDb } from "./db";
 import morgan from "morgan";
+import { AuthRouter } from "./routes/auth.route";
 const app = express();
 const port = process.env.PORT || 8080;
 
@@ -14,11 +15,12 @@ connectDb()
         }
 
         // If connected to database, run the server
-        app.get("/", (req: Request, res: Response) => {
-            res.status(200).json({
-                message: "Server Setup!"
-            })
-        })
+
+        // Body parser middleware
+        app.use(express.json());
+
+        // API Routes
+        app.use("/api/v1/auth", AuthRouter);
 
         app.listen(port, () => {
             console.log(`Server listening on port ${port}`);

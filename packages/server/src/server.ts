@@ -3,6 +3,7 @@ import "dotenv/config";
 import { connectDb } from "./db";
 import morgan from "morgan";
 import { AuthRouter } from "./routes/auth.route";
+import cookieParser from "cookie-parser";
 const app = express();
 const port = process.env.PORT || 8080;
 
@@ -18,6 +19,9 @@ connectDb()
 
         // Body parser middleware
         app.use(express.json());
+
+        // Cookie parser middleware
+        app.use(cookieParser());
 
         // API Routes
         app.use("/api/v1/auth", AuthRouter);

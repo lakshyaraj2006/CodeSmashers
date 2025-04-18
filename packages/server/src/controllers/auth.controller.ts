@@ -1,6 +1,8 @@
 import { Request, Response } from "express";
 import { asyncHandler } from "../utils/asyncHandler";
 import { UserModel } from "../models/user.model";
+import jwt from "jsonwebtoken";
+import { RefreshTokenPayload } from "../utils/jwtpayload";
 
 const signup = asyncHandler(
     async (req: Request, res: Response) => {
@@ -77,6 +79,55 @@ const login = asyncHandler(
             })
         }
     }
-)
+);
 
-export const AuthController = { signup, login };
+const logout = asyncHandler(
+    (req: Request, res: Response) => {
+        let success = false;
+        if (req.cookies["refreshtoken"]) {
+            res.clearCookie("refreshtoken");
+            success = true;
+
+            res.status(200).json({
+                success,
+                message: "Logged out successfully!"
+            })
+        } else {
+            res.status(401).json({
+                success,
+                message: "Unauthorized request!"
+            })
+        }
+    }
+);
+
+const refreshToken = asyncHandler(
+    async (req: Request, res: Response) => {
+        const cookies = req.cookies;
+
+        if (cookies["refreshtoken"]) {
+            try {
+                
+                const decoded = jwt.verify(cookies["refreshtoken"], process.env.REFRESH_TOKEN_SECRET!) as RefreshTokenPayload;
+
+                const user = await UserModel.findById(decoded._id);
+
+                const newAccessToken = user?.generateAccessToken();
+
+                res.status(200).json({
+                    accessToken: newAccessToken
+                })
+            } catch (error) {
+                res.status(401).json({
+                    message: "Invalid or expired token!"
+                })
+            }
+        } else {
+            res.status(401).json({
+                message: "Unauthorized request!"
+            })
+        }
+    }
+);
+
+export const AuthController = { signup, login, logout, refreshToken };

@@ -3,7 +3,6 @@ import mongoose, {Schema, Document} from "mongoose";
 export interface Category extends Document {
     name: string;
     slug: string;
-    user: Schema.Types.ObjectId;
     updatedAt: Date;
     createdAt: Date;
 }
@@ -15,10 +14,6 @@ export const CategorySchema: Schema<Category> = new Schema({
     },
     slug: {
         type: String
-    },
-    user: {
-        type: String,
-        required: true
     }
 });
 

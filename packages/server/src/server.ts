@@ -4,6 +4,7 @@ import { connectDb } from "./db";
 import morgan from "morgan";
 import { AuthRouter } from "./routes/auth.route";
 import cookieParser from "cookie-parser";
+import { CategoryRouter } from "./routes/category.route";
 const app = express();
 const port = process.env.PORT || 8080;
 
@@ -25,6 +26,7 @@ connectDb()
 
         // API Routes
         app.use("/api/v1/auth", AuthRouter);
+        app.use("/api/v1/categories", CategoryRouter);
 
         app.listen(port, () => {
             console.log(`Server listening on port ${port}`);

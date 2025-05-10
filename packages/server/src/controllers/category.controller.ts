@@ -21,20 +21,20 @@ const getCategoryById = asyncHandler(
 
 const createCategory = asyncHandler(
     async (req: Request, res: Response) => {
-        const { name } = req.params;
+        const { name, tagline } = req.body;
         let success = false;
 
         try {
-            const newCategory = new CategoryModel({ name });
+            const newCategory = new CategoryModel({ name, tagline });
             await newCategory.save()
             success = true;
 
             res.status(201).json({
                 success,
-                message: 'Category created!',
-                category: newCategory
+                message: 'Category created!'
             })
         } catch (error) {
+            console.log(error)
             res.status(500).json({
                 success,
                 message: 'Some error occurred!'

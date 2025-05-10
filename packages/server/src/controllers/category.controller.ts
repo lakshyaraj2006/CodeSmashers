@@ -43,4 +43,29 @@ const createCategory = asyncHandler(
     }
 )
 
-export const CategoryController = { getAllCategories, getCategoryById, createCategory };
+const updateCategory = asyncHandler(
+    async (req: Request, res: Response) => {
+        const { id } = req.params;
+        const { name, tagline } = req.body;
+        let success = false;
+
+        if (!name) {
+            res.status(400).json({
+                success,
+                message: "Name is required!"
+            })
+        } else {
+            const category = await CategoryModel.findByIdAndUpdate(id, {
+                $set: { name, tagline }
+            });
+            success = true;
+
+            res.status(400).json({
+                success,
+                message: "Category updated successfully!"
+            })
+        }
+    }
+)
+
+export const CategoryController = { getAllCategories, getCategoryById, createCategory, updateCategory };
